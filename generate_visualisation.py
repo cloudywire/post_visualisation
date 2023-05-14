@@ -1,6 +1,7 @@
-from multi_rake import Rake
+from ioc_finder import find_iocs # https://pypi.org/project/ioc-finder/
+from multi_rake import Rake # https://pypi.org/project/multi-rake/
 from PIL import Image
-from ioc_finder import find_iocs
+import fractalanalysis
 import numpy as np
 import math
 import imageio
@@ -569,7 +570,6 @@ def render_thumbnail(post, metadata, outfile):
     # test data
     image = cv2.imread(outfile, 0)
 
-    import fractalanalysis
     I = imageio.imread(outfile, mode='L') / 255.0
 
     #modify threshold to filter features
