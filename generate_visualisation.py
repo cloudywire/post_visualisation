@@ -188,10 +188,6 @@ def analyse_post(post):
     paths = detect_unix_path(post)
     #replace_substrings(post, paths, ' FP_PIXEL ')
 
-    def detect_windows_path(text):
-        pattern = r'(^([a-z]|[A-Z]):(?=\\(?![\0-\37<>:"/\\|?*])|\/(?![\0-\37<>:"/\\|?*])|$)|^\\(?=[\\\/][^\0-\37<>:"/\\|?*]+)|^(?=(\\|\/)$)|^\.(?=(\\|\/)$)|^\.\.(?=(\\|\/)$)|^(?=(\\|\/)[^\0-\37<>:"/\\|?*]+)|^\.(?=(\\|\/)[^\0-\37<>:"/\\|?*]+)|^\.\.(?=(\\|\/)[^\0-\37<>:"/\\|?*]+))((\\|\/)[^\0-\37<>:"/\\|?*]+|(\\|\/)$)*()$'
-        windows_path = re.findall(pattern, text)
-        return windows_path
 
     post = replace_substrings(post, iocs['file_paths'], ' FP_PIXEL ')
     post = replace_substrings(post, iocs['asns'], ' ASN_PIXEL ')
