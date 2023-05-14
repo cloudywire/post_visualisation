@@ -538,7 +538,7 @@ def render_thumbnail(post, metadata, outfile):
         f.write(str(post))
         f.write("\n")
         f.write("---------------------------------------------")
-        f.write('\n")
+        f.write("\n")
         f.write(str(intermediate_post))
 
 
