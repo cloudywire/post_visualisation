@@ -106,25 +106,25 @@ word_dictionary = "ransomware", "bots", "trojan", "virus", " threat ", "governme
                    "Целевой фишинг", "двухфакторная сеть аутентичной", "2fa", "vpn", "виртуальная частная", "уязвимость", \
                      "китобойный промысел", "водозабор", "нулевой день", "python", "c++", "delphi", "0day"\
 
-'''filter all types from list that aren't strings'''
+# filter all types from list that aren't strings
 posts = [x for x in posts if isinstance(x, str)]
 
-'''filter strings that are less than 200 characters'''
+#filter strings that are less than 200 characters
 posts = [x for x in posts if len(x) > 500]
 
 code_post = []
-'''for the first 100 posts, return posts containing ***CODE*** (for testing)'''
+# for the first 100 posts, return posts containing ***CODE*** (for testing)
 for post in posts[:100]:
     if '***CODE***' in post:
         code_post.append(post)
 
 price_post = []
-'''for the first 100 posts, return posts containing '$' (for testing)'''
+# for the first 100 posts, return posts containing '$' (for testing)
 for post in posts[:100]:
     if '$' in post:
         price_post.append(post)
 
-'''given a list of substrings, replace them in another string with a given ID '''
+# given a list of substrings, replace them in another string with a given ID
 def replace_substrings(string, substrings, ID):
     for substring in substrings:
         substring = substring.lower()
@@ -132,7 +132,7 @@ def replace_substrings(string, substrings, ID):
     return string
 
 
-'''order of feature replacement matters 
+''' feature precedence matters,  
 i.e. detect in order of priorities (rake detect-> ioc detect -> ioc replace 
 -> question detect/replace -> keyword/key phrase rake replace -> currency detect/replace -> code detect/replace)
 '''
@@ -193,7 +193,6 @@ def analyse_post(post):
         windows_path = re.findall(pattern, text)
         return windows_path
 
-
     post = replace_substrings(post, iocs['file_paths'], ' FP_PIXEL ')
     post = replace_substrings(post, iocs['asns'], ' ASN_PIXEL ')
     post = replace_substrings(post, iocs['md5s'], ' MD5_PIXEL ')
@@ -209,9 +208,9 @@ def analyse_post(post):
     common_patterns = [
         # Assembly Language
         ' MOV ', ' SUB ', ' CMP ', ' JMP ', ' JE ', ' JNE ', ' JZ ', ' JNZ ', ' RET ', ' POP ', ' INC ', ' DEC ', ' XOR ', 'esi', 'eax', ' proc ', ' dword ' ,
-
-        ' invoke ', ' stdcall ',
+        
         #etc
+        ' invoke ', ' stdcall ',
         '$dir', '$file', '$line', '$this', '$self', '$class', '$function', '$method', '$namespace', '$interface',
         '$trait', '$goto', '$switch', '$case', '$default', '$break', '$continue', '$return', '$throw', '$try', '$str'                                                                                             
 
@@ -233,33 +232,7 @@ def analyse_post(post):
         '$response', '$request', '$file', '$path', '$dir', '$folder', '$name', '$url', '$uri', '$host',
         '$port', '$user', '$password', '$token', '$auth', '$session', '$database', '$table', '$column',
         '$query', '$sql', '$condition', '$filter', '$regex', '$pattern', '$match', '$replacement', '$target',
-        '$source', '$destination', '$source_file', '$target_file', '$source_dir', '$target_dir', '$source_path',
-        '$target_path', '$source_url', '$target_url', '$source_uri', '$target_uri', '$source_host', '$target_host',
-        '$source_port', '$target_port', '$source_user', '$target_user', '$source_password', '$target_password',
-        '$source_token', '$target_token', '$source_auth', '$target_auth', '$source_data', '$target_data',
-        '$source_input', '$target_input', '$source_param', '$target_param', '$source_args', '$target_args',
-        '$source_kwargs', '$target_kwargs', '$source_config', '$target_config', '$source_settings', '$target_settings',
-        '$source_options', '$target_options', '$source_message', '$target_message', '$source_error', '$target_error',
-        '$source_exception', '$target_exception', '$source_response', '$target_response', '$source_request',
-        '$target_request', '$source_file_path', '$target_file_path', '$source_dir_path', '$target_dir_path',
-        '$source_url_path', '$target_url_path', '$source_uri_path', '$target_uri_path', '$source_host_name',
-        '$target_host_name', '$source_port_number', '$target_port_number', '$source_user_name', '$target_user_name',
-        '$source_password_value', '$target_password_value', '$source_token_value', '$target_token_value',
-        '$source_auth_info', '$target_auth_info', '$source_data_value', '$target_data_value', '$source_input_value',
-        '$target_input_value', '$source_param_value', '$target_param_value', '$source_args_values',
-        '$target_args_values', '$source_kwargs_values', '$target_kwargs_values', '$source_config_info',
-        '$target_config_info', '$source_settings_info', '$target_settings_info', '$source_options_info',
-        '$target_options_info', '$source_message_text', '$target_message_text', '$source_error_info',
-        '$target_error_info', '$source_exception_info', '$target_exception_info', '$source_response_data',
-        '$target_response_data', '$source_request_data', '$target_request_data', '$source_file_path_value',
-        '$target_file_path_value', '$source_dir_path_value', '$target_dir_path_value',
-        '$source_url_path_value', '$target_url_path_value', '$source_uri_path_value',
-        '$target_uri_path_value', '$source_host_name_value', '$target_host_name_value',
-        '$source_port_number_value', '$target_port_number_value', '$source_user_name_value',
-        '$target_user_name_value', '$source_password_value_value', '$target_password_value_value',
-        '$source_token_value_value', '$target_token_value_value', '$source_auth_info_value',
-        '$target_auth_info_value', '$source_data_value_value', '$target_data_value_value',
-        '$source_input_value_value', '$target_input_value_value', '$source_param_value_value']
+        '$source', '$destination', '$source_file', '$target_file', '$source_dir', '$target_dir']
 
     post = replace_substrings(post, common_patterns, ' CODE_PHRASE_PIXEL ')
     post = replace_substrings(post, code_placeholders, ' CODE_PHRASE_PIXEL ')
@@ -416,21 +389,6 @@ def analyse_post(post):
     # can activate patterns only if over a threshold of symbols detected
     post = replace_substrings(post, symbols, ' CODE_SYMBOL_PIXEL ')
 
-
-    '''
-    import chardet
-    def detect_encoding(text):
-        result = chardet.detect(text)
-        encoding = result['encoding']
-        confidence = result['confidence']
-        return encoding, confidence
-
-    # Example usage
-    text = b'\xc3\xa9'  # Byte sequence in UTF-8 encoding for 'é'
-    encoding, confidence = detect_encoding(text)
-    print("Detected Encoding:", encoding)
-    print("Confidence:", confidence)'''
-
     # exentions of files commonly found in forum and code segments
     file_extensions = [
         '.php', '.js', '.html', '.css', '.py', '.c ', '.cpp', '.h ', '.java', '.class', '.jar', '.sh', '.bat',
@@ -461,7 +419,6 @@ def analyse_post(post):
     return post, original_post
 
 
-
 def render_thumbnail(post, metadata, outfile):
     print(post)
     dim = int(math.ceil(math.sqrt(len(post))))
@@ -472,7 +429,6 @@ def render_thumbnail(post, metadata, outfile):
     def duplicates(lst, item):
         return [i for i, x in enumerate(lst) if x == item]
 
-    '''change values in a list to a new value'''
     def replace_elements_in_list(lst, old, new):
         for i, e in enumerate(lst):
             if e in old:
@@ -562,21 +518,16 @@ def render_thumbnail(post, metadata, outfile):
             column = e % dim
             grid[row][column] = [128,128,128]
 
-
-    print(grid)
     img = Image.fromarray(grid)
     img.save(outfile)
 
-    # test data
     image = cv2.imread(outfile, 0)
-
     I = imageio.imread(outfile, mode='L') / 255.0
 
     #modify threshold to filter features
     fd = "{:.2f}".format(round(fractalanalysis.fractal_dimension(I, threshold=0.8), 2))
     print(f"Fractal dimension: {fd}")
 
-    '''write string to text file'''
     with open(outfile + "fd: " +  fd + '.txt', 'w') as f:
         f.write("fractal dimension was computed at: " + str(fd))
         f.write("\n")
@@ -587,6 +538,7 @@ def render_thumbnail(post, metadata, outfile):
         f.write(str(post))
         f.write("\n")
         f.write("---------------------------------------------")
+        f.write('\n")
         f.write(str(intermediate_post))
 
 
